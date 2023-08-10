@@ -15,7 +15,12 @@ let puntosJugador = 0,
 //Referencias del HTML
 
 let btnPedir = document.querySelector("#btnPedir");
+
 const puntosHTML = document.querySelectorAll("small");
+
+const divCartasJugador = document.querySelector("#jugador-cartas");
+
+const divCartasComputadora = document.querySelectorAll("#computadora-cartas");
 
 //Esta función crea un nuebo Deck de cartas
 
@@ -69,4 +74,20 @@ btnPedir.addEventListener("click", () => {
   puntosJugador = puntosJugador + valorCarta(carta);
 
   puntosHTML[0].innerText = puntosJugador;
+
+  // <img class="carta" src="assets/cartas/2C.png"/>;
+  const imgCarta = document.createElement("img");
+  imgCarta.src = `assets/cartas/${carta}.png`;
+  imgCarta.classList.add("carta");
+  divCartasJugador.append(imgCarta);
+
+  //Evaluar los puntos
+
+  if (puntosJugador > 21) {
+    console.warn("Lo Siento mucho, perdiste");
+    btnPedir.disabled = true;
+  } else if (puntosJugador === 21) {
+    console.warn("21, Genial, Ganaste");
+    btnPedir.disabled = true;
+  }
 });
