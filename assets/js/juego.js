@@ -16,11 +16,13 @@ let puntosJugador = 0,
 
 let btnPedir = document.querySelector("#btnPedir");
 
+let btnDetener = document.querySelector("#btnDetener");
+
 const puntosHTML = document.querySelectorAll("small");
 
 const divCartasJugador = document.querySelector("#jugador-cartas");
 
-const divCartasComputadora = document.querySelectorAll("#computadora-cartas");
+const divCartasComputadora = document.querySelector("#computadora-cartas");
 
 //Esta función crea un nuebo Deck de cartas
 
@@ -66,13 +68,36 @@ const valorCarta = (carta) => {
   return isNaN(valor) ? (valor === "A" ? 11 : 10) : valor * 1;
 };
 
+//Turno de la computadora
+
+const turnoComputadora = (puntosMinimos) => {
+  do {
+    if (puntosMinimos === 0) {
+      break;
+    }
+    const carta = pedirCarta();
+
+    puntosComputadora = puntosComputadora + valorCarta(carta);
+    puntosHTML[1].innerText = puntosComputadora;
+
+    // <img class="carta" src="assets/cartas/2C.png"/>;
+    const imgCarta = document.createElement("img");
+    imgCarta.src = `assets/cartas/${carta}.png`;
+    imgCarta.classList.add("carta");
+    divCartasComputadora.append(imgCarta);
+
+    if (puntosMinimos > 21) {
+      break;
+    }
+  } while (puntosComputadora < puntosMinimos && puntosMinimos <= 21);
+};
+
 //Eventos Pedir Carta y Remplazar puntaje en el HTML
 
 btnPedir.addEventListener("click", () => {
   const carta = pedirCarta();
 
   puntosJugador = puntosJugador + valorCarta(carta);
-
   puntosHTML[0].innerText = puntosJugador;
 
   // <img class="carta" src="assets/cartas/2C.png"/>;
@@ -86,8 +111,25 @@ btnPedir.addEventListener("click", () => {
   if (puntosJugador > 21) {
     console.warn("Lo Siento mucho, perdiste");
     btnPedir.disabled = true;
+    btnDetener.disabled = true;
+    turnoComputadora(puntosJugador);
   } else if (puntosJugador === 21) {
     console.warn("21, Genial, Ganaste");
     btnPedir.disabled = true;
+    btnDetener.disabled = true;
+    turnoComputadora(puntosJugador);
   }
+});
+
+//Evento Detener juego y disparar Turno Computadora
+
+btnDetener.addEventListener("click", () => {
+  if (puntosJugador === 0) {
+    btnDetener.disabled = false;
+  } else {
+    btnPedir.disabled = true;
+    btnDetener.disabled = true;
+  }
+
+  turnoComputadora(puntosJugador);
 });
